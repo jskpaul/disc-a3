@@ -1,0 +1,73 @@
+.navbar {
+  background-color: #4E2A84;
+  color: white;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* max-width: 600px; */
+  margin: auto;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #f2f2f2;
+  font-family: arial;
+  gap: 10px;
+  text-align: center;
+}
+.links {
+  display: flex;
+  margin-left: auto;
+  gap: 10px;
+  
+}
+
+.users-page {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+  padding: auto;
+  
+}
+
+
+
+.mini-profile {
+  padding-top: 20px;
+  flex-direction: row;
+  background-color: blue;
+  color: white;
+  width: 150px;
+  height: auto;
+  border-radius: 20px;
+  align-items: center;
+  text-align: center;
+
+}
+
+.profile-photo{
+  display:flex;
+  width: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: auto;
+  align-items: center;
+}
+
+.user-boxes {
+  display: flex;
+  flex-direction: row;
+  width: auto;
+  height: 1000px;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  
+}
+
+.other-profile {
+  background-color: #418ff0;
+  width: 200px;
+  height: 200px;
+  border-radius: 20px;
+  
+  
+}
