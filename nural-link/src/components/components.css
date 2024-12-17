@@ -1,0 +1,42 @@
+.other-profile {
+  background-color: #418fde;
+  width: 200px;
+  height: 200px;
+  border-radius: 20px;
+  
+  
+}
+
+.navbar {
+  background-color: #4E2A84;
+  color: white;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* max-width: 600px; */
+  margin: auto;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #f2f2f2;
+  font-family: arial;
+  gap: 10px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.navbar-home-link {
+  text-decoration: none;  /* Remove underline */
+  color: white;           /* Set text color to white */
+}
+
+.navbar-home-link:visited {
+  color: white;           /* Keep the text white even after the home-link is visited */
+}
+
+.navbar-home-link:hover {
+  color: white;           /* Keep the text white when hovering */
+}
+
+.navbar-home-link:active {
+  color: white;           /* Keep the text white when the link is clicked */
+}
