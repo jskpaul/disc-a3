@@ -1,6 +1,5 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-import User from './components/user';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/navbar';
 import Home from './components/Home';
@@ -10,19 +9,16 @@ import Users from './components/userPage';
 
 function App() {
 
-  const [search, setSearch] = useState("")
-  const [users, setUsers] = useState([{ name: 'Paul Kim', major: 'Computer Science', year: '2027' },
-  { name: 'Daniel Lee', major: 'Computer Science', year: '2025' },
-  { name: 'David Yim', major: 'Computer Science', year: '2027' },
-  { name: 'John Doe', major: 'Physics', year: '2024' },]);
+  const [search, setSearch] = useState("");
+
 
   // Log when search term changes
-  useEffect(() => {
-    console.log('Search term changed:', search);
-  }, [search]); // This effect runs every time `search` state changes
-  useEffect(() => {
-    console.log('New user added: ')
-  }, [users])
+  // useEffect(() => {
+  //   console.log('Search term changed:', search);
+  // }, [search]); // This effect runs every time `search` state changes
+  // useEffect(() => {
+  //   console.log('New user added: ')
+  // }, [users])
   return (
     <Router>
       <div className="App">
