@@ -9,7 +9,7 @@ function Navbar({ setSearch }) {
             <Link to="/" className='navbar-home-link' ><h1>NUral Network</h1></Link>
             <div className="links">
 
-                <Link to="/users"><button>Connect with users</button></Link>
+                <Link to="/users"><button className='connect-button'>Connect with users</button></Link>
 
                 <input
                     type="text"

@@ -3,14 +3,20 @@
   width: 200px;
   height: 200px;
   border-radius: 20px;
-  
-  
 }
 
+.profile-photo {
+  display: flex;
+  width: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: auto;
+  align-items: center;
+}
 .navbar {
-  background-color: #4E2A84;
+  background-color: #4e2a84;
   color: white;
-  padding: 5px;
+  padding: 10px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -22,21 +28,59 @@
   gap: 10px;
   text-align: center;
   text-decoration: none;
+  margin: 20px;
+  border-radius: 20px;
 }
 
 .navbar-home-link {
-  text-decoration: none;  /* Remove underline */
-  color: white;           /* Set text color to white */
+  text-decoration: none; /* Remove underline */
+  color: white; /* Set text color to white */
 }
 
 .navbar-home-link:visited {
-  color: white;           /* Keep the text white even after the home-link is visited */
+  color: white; /* Keep the text white even after the home-link is visited */
 }
 
 .navbar-home-link:hover {
-  color: white;           /* Keep the text white when hovering */
+  color: white; /* Keep the text white when hovering */
 }
 
 .navbar-home-link:active {
-  color: white;           /* Keep the text white when the link is clicked */
+  color: white; /* Keep the text white when the link is clicked */
+}
+
+.connect-button {
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.search-button {
+  display: flex;
+}
+
+
+.users-page {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+  padding: auto;
+  
+}
+
+
+
+.mini-profile {
+  padding-top: 20px;
+  margin-left: 20px;
+  flex-direction: row;
+  background-color: blue;
+  color: white;
+  width: 150px;
+  height: auto;
+  border-radius: 20px;
+  align-items: center;
+  text-align: center;
+
 }

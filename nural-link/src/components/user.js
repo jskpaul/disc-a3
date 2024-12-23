@@ -2,13 +2,13 @@
 import './components.css';
 import React, { useState } from 'react';
 
-function User({id, firstName, lastName, email, bio, major, graduationYear, profilePicture, created_at }) {
+function User({id, firstname, lastname, email, bio, major, graduationyear, profilePicture, created_at }) {
     
     return (
         <div className="other-profile">
-            <h4>{firstName} {lastName}</h4>
+            <h4>{firstname} {lastname}</h4>
             <p>Major: {major}</p>
-            <p>Year: {graduationYear}</p>
+            <p>Year: {graduationyear}</p>
             <button>Connect</button>
         </div>
     );

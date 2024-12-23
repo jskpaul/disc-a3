@@ -5,18 +5,28 @@ import User from './user';
 function Users() {
     const [search, setSearch] = useState('');
     const [users, setUsers] = useState([
-        { name: 'Paul Kim', major: 'Computer Science', year: '2027' },
-        { name: 'Daniel Lee', major: 'Computer Science', year: '2025' },
-        { name: 'David Yim', major: 'Computer Science', year: '2027' },
-        { name: 'John Doe', major: 'Physics', year: '2024' },
+        // { firstname: 'Paul', lastname:'Kim', major: 'Computer Science', graduationyear: '2027' },
+        // { firstname: 'Daniel Lee', major: 'Computer Science', graduationyear: '2025' },
+        // { firstname: 'John Doe', major: 'Physics', graduationyear: '2024' },
     ]);
+
+    const fetchUsers = async () => {
+        const response = await fetch(`http://localhost:3002/api/users`);
+
+        if (response.ok) {
+            let users = await response.json();
+            console.log(users);
+            setUsers(users);
+
+        }
+    }
 
     useEffect(() => {
         console.log('Search term changed:', search);
     }, [search]);
 
     useEffect(() => {
-        console.log('New user added: ', users);
+        fetchUsers();
     }, [users]);
 
     return (
@@ -25,10 +35,10 @@ function Users() {
                 <div className="mini-profile">
                     <img
                         className="profile-photo"
-                        src="https://hips.hearstapps.com/hmg-prod/images/aaron-judge-of-the-new-york-yankees-poses-for-a-photo-news-photo-1729623663.jpg?crop=1.00xw:0.609xh;0,0.0301xh&resize=1200:*"
+                        src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c7/Chill_guy_original_artwork.jpg/220px-Chill_guy_original_artwork.jpg"
                         alt="Profile"
                     />
-                    <h2>A-A-Ron Judge</h2>
+                    <h2>Chill Guy</h2>
                     <h3>Year</h3>
                     <h3>Major</h3>
                 </div>
@@ -36,16 +46,17 @@ function Users() {
                     {users
                         .filter(
                             (user) =>
-                                user.name.toLowerCase().includes(search.toLowerCase()) ||
+                                user.firstname.toLowerCase().includes(search.toLowerCase()) ||
                                 user.major.toLowerCase().includes(search.toLowerCase()) ||
-                                user.year.includes(search)
+                                user.graduationyear.includes(search)
                         )
                         .map((user, index) => (
                             <User
                                 key={index}
-                                name={user.name}
+                                firstname={user.firstname}
+                                lastname={user.lastname}
                                 major={user.major}
-                                year={user.year}
+                                graduationyear={user.graduationyear}
                             />
                         ))}
                 </div>
