@@ -1,8 +1,13 @@
 .other-profile {
   background-color: #418fde;
   width: 200px;
-  height: 200px;
+  height: auto;
   border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px; /* Add space inside the component */
+
+  /* box-sizing: border-box; // Ensure padding doesn't affect the width */
 }
 
 .profile-photo {
@@ -56,6 +61,25 @@
   font-weight: bold;
 }
 
+.new-user-button {
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bold;
+}
+.signin-button {
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bold;
+}
+.signout-button {
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
 .search-button {
   display: flex;
 }
@@ -63,12 +87,15 @@
 
 .users-page {
   display: flex;
-  flex-direction: row;
+  flex-direction: auto;
   gap: 50px;
   padding: auto;
   
 }
-
+.user-boxes {
+    display: flex;
+    align-items: flex-start; /* Prevent children from stretching */
+}
 
 
 .mini-profile {
@@ -83,4 +110,51 @@
   align-items: center;
   text-align: center;
 
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column; /* Stack fields vertically */
+    gap: 15px; /* Add spacing between fields */
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column; /* Label and input on separate lines */
+}
+
+label {
+    margin-bottom: 5px; /* Add space below label */
+    font-weight: bold;
+}
+
+input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: auto;
+    align-self: center;
+}
+select  {
+  padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: auto;
+    align-self: center;
+}
+.submit-button {
+    width: auto; /* Adjust the width to fit the button content */
+    padding: 10px 20px; /* Add some padding for better styling */
+    border: none; /* Optional: remove default border */
+    border-radius: 5px; /* Optional: add rounded corners */
+    background-color: #418fde; /* Optional: set button background color */
+    color: white; /* Optional: set text color */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    display: inline-block; /* Ensure it doesn't behave like a block element */
+    margin: 10px auto; /* Center the button horizontally */
+}
+
+.submit-button:disabled {
+    background-color: #cccccc; /* Optional: change color when disabled */
+    cursor: not-allowed; /* Change cursor to indicate it's disabled */
 }

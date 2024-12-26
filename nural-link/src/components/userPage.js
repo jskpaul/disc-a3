@@ -48,7 +48,7 @@ function Users() {
                             (user) =>
                                 user.firstname.toLowerCase().includes(search.toLowerCase()) ||
                                 user.major.toLowerCase().includes(search.toLowerCase()) ||
-                                user.graduationyear.includes(search)
+                                user.graduation_year.includes(search)
                         )
                         .map((user, index) => (
                             <User
@@ -56,7 +56,8 @@ function Users() {
                                 firstname={user.firstname}
                                 lastname={user.lastname}
                                 major={user.major}
-                                graduationyear={user.graduationyear}
+                                graduationyear={user.graduation_year}
+                                // profilepictureurl={user.profilepictureurl}
                             />
                         ))}
                 </div>

@@ -4,13 +4,60 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/navbar';
 import Home from './components/Home';
 import Users from './components/userPage';
+import NewUser from './components/newUserPage';
+import { createClient } from '@supabase/supabase-js'
+import { Auth, SignIn } from '@supabase/auth-ui-react'
+import { ThemeSupa } from '@supabase/auth-ui-shared'
+import LogIn from './components/signIn';
+
 
 
 
 function App() {
 
   const [search, setSearch] = useState("");
+  const [token, setToken] = useState("");
+  useEffect(() => {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get("access_token");
 
+    if (accessToken) {
+      setToken(accessToken);
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, []);
+
+  const checkLogIn = async () => {
+    try {
+      const response = await fetch("http://localhost:3002/api/auth/status", {
+        method: "GET",
+        // headers: {
+        //   "authorization": `Bearer ${token}`,
+        //   "Content-Type": "application/json",
+        // },
+        credentials: "include",
+      });
+      
+      
+      if (response.ok) {
+        const data = await response.json();
+        // console.log(data);
+        // console.log(response);
+        setToken(data.session_token); // Update token state if authenticated
+        
+      } else {
+        setToken(''); // Clear token if not authenticated
+      }
+    } catch (error) {
+      console.error("Error checking login status:", error);
+
+    }
+
+  }
+
+  useEffect(() => {
+    checkLogIn()
+  })
 
   // Log when search term changes
   // useEffect(() => {
@@ -22,10 +69,12 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Navbar setSearch={setSearch} />
+        <Navbar setSearch={setSearch} tokenProp={token} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/new" element={<NewUser />} />
+          <Route path="/auth" element={<LogIn />} />
         </Routes>
       </div>
     </Router>
