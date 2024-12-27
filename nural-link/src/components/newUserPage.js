@@ -63,6 +63,8 @@ function NewUser() {
         validatePwds();
     });
 
+    
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!validatePwds) {
@@ -172,7 +174,7 @@ function NewUser() {
             return;
         }
         try {
-            const response = await fetch("http://localhost:3002/api/auth/user", {
+            const response = await fetch("http://localhost:3002/api/auth/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

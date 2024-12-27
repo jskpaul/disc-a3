@@ -8,7 +8,7 @@ function User({id, firstname, lastname, email, bio, major, graduationyear, profi
         <div className="other-profile">
             <h4>{firstname} {lastname}</h4>
             <p>Major: {major}</p>
-            <p>Year: {graduationyear}</p>
+            <p>Class Of: {graduationyear}</p>
             <img className = "profile-photo" src={profilepictureurl} alt='profile'/>
             <button>Connect</button>
         </div>

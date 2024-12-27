@@ -79,6 +79,12 @@
   font-size: 20px;
   font-weight: bold;
 }
+.create-edit-button {
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bold;
+}
 
 .search-button {
   display: flex;

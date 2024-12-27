@@ -51,7 +51,9 @@ function LogIn() {
             
             
         } catch (err) {
+            console.error(err.message);
             setError(err.message);
+            alert(err.message);
         } finally {
             setIsLoading(false);
             setError("");

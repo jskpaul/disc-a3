@@ -15,11 +15,11 @@ import { useAuth } from '../contexts/authContext';
 function Navbar({ setSearch, tokenProp }) {
 
     const [showAlert, setShowAlert] = useState(false);
-    // const [token, setToken] = useState('');
+    const [token, setToken] = useState('');
     const [loggedIn, setLoggedIn] = useState(false);
     const navigate = useNavigate();
-    const {token, logOut} =  useAuth();
-    
+    const { logOut } = useAuth();
+
 
     // useEffect(() => {
     //     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -34,15 +34,15 @@ function Navbar({ setSearch, tokenProp }) {
 
     //     return () => subscription.unsubscribe()
     // }, [])
-    // useEffect(() => {
-    //     console.log(tokenProp)
-    //     setToken(tokenProp);
-        
-        
-    // }, [tokenProp]);
-    // useEffect(() => {
-    //     console.log('changed token:', token);
-    // }, [token]);
+    useEffect(() => {
+        console.log(tokenProp)
+        setToken(tokenProp);
+
+
+    }, [tokenProp]);
+    useEffect(() => {
+        console.log('changed token:', token);
+    }, [token]);
     const handleConnectClick = () => {
         console.log(token);
         if (!token) {
@@ -52,16 +52,36 @@ function Navbar({ setSearch, tokenProp }) {
             navigate('/users'); // Navigate to the users page if logged in
         }
     };
+    const handleSignOut = async () => {
+        try {
+            const response = await fetch('http://localhost:3002/api/auth/logout', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+
+            })
+            if (response.ok) {
+                localStorage.removeItem('authToken'); // or sessionStorage depending on where you store it
+                
+            }
+        } catch (error) {
+            console.error(error);
+        }
+        
+    }
 
 
     return (
         <nav className="navbar">
             <Link to="/" className='navbar-home-link' ><h1>NUral Network</h1></Link>
             <div className="links">
-                {token ? (<Link to='/'><button className='signout-button' onClick={logOut}>Log Out</button></Link>) : (<div><Link to='/new'><button className='new-user-button'>Sign Up</button></Link>
-                    <Link to='/auth'><button className='signin-button'>Log in</button></Link></div>)}
-
-                <button className='connect-button' onClick={handleConnectClick}>Connect with users</button>
+                {token ? (<div><Link to='/'><button className='signout-button' onClick={handleSignOut}>Log Out</button></Link>
+                    <Link to='/profile'><button className='create-edit-button' >Create/Update Profile</button></Link>
+                    <button className='connect-button' onClick={handleConnectClick}>Connect with users</button></div>) :
+                    (<div><Link to='/new'><button className='new-user-button'>Sign Up</button></Link>
+                        <Link to='/auth'><button className='signin-button'>Log in</button></Link></div>)}
 
                 <input
                     type="text"
