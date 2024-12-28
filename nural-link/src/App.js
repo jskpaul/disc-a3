@@ -10,13 +10,13 @@ import { Auth, SignIn } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import LogIn from './components/signIn';
 import ProfilePage from './components/profileEditor';
+import ConnectionsPage from './components/connectionsPage';
 
 
 
 
 function App() {
 
-  const [search, setSearch] = useState("");
   const [token, setToken] = useState("");
   const [loggedInUserId, setLoggedInUserId] = useState("");
   useEffect(() => {
@@ -40,10 +40,10 @@ function App() {
         credentials: "include",
       });
       
-      console.log(response);
+      // console.log(response);
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         // console.log(data);
         // console.log(response);
         setToken(data.session_token); // Update token state if authenticated
@@ -73,13 +73,14 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Navbar setSearch={setSearch} tokenProp={token} />
+        <Navbar  tokenProp={token} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/users" element={<Users useridProp={loggedInUserId} tokenProp={token} />} />
           <Route path="/new" element={<NewUser />} />
           <Route path="/auth" element={<LogIn />} />
           <Route path='/profile' element={<ProfilePage useridProp={loggedInUserId} tokenProp={token} /> } />
+          <Route path='/connections' element={< ConnectionsPage useridProp={loggedInUserId} />} />
         </Routes>
       </div>
     </Router>

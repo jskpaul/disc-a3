@@ -5,14 +5,9 @@ import dotenv from "dotenv";
 import { error } from "console";
 import { v4 as uuidv4 } from 'uuid';
 import { hash } from "crypto";
-import bcrypt from 'bcryptjs';
 import supabase from "./config/supabase.js";
 
-async function hashPassword(password) {
-    const saltRounds = 10; // Number of salt rounds (higher is more secure, but slower)
-    const hashedPassword = bcrypt.hashSync(password, saltRounds);
-    return hashedPassword;
-}
+
 const { Pool } = pg;
 dotenv.config();
 const app = express();
@@ -40,6 +35,7 @@ app.get("/api/users", async (req, res) => {
         const { data, error } = await supabase
             .from('users')
             .select(`
+                id,
     firstname,
     lastname,
     user_profiles (
@@ -179,10 +175,10 @@ app.put("/api/profile", async (req, res) => {
                     date_of_birth: birthDate
                 }])
             if (error) {
-                res.status(400).json({error: error})
+                res.status(400).json({ error: error })
             }
 
-            res.json({message: "profile added", data: data})
+            res.json({ message: "profile added", data: data })
         } else {
             const { data: profile_data, error } = await supabase.from('user_profiles')
                 .update([{
@@ -249,8 +245,89 @@ app.get("/api/protected", checkAuth, (req, res) => {
     });
 });
 
+app.put("/api/connect", async (req, res) => {
+    try {
+        const connection = req.body;
+        
+        const recipientId = connection.id;
+        // console.log(recipientId);
+        const requestorId = connection.requestorId;
+        const { data: check_duplicate_data, error: check_duplicate_error } = await supabase
+            .from('connections')
+            .select('*')
+            .eq('recipientid', recipientId)
+            .eq('initiatorid', requestorId)
+            .single();
+        if (!check_duplicate_error) {
+            res.status(409).json({ error: 'duplicate request' });
+        }
+
+        const { data, error } = await supabase
+            .from('connections')
+            .insert([
+                { initiatorid: requestorId, recipientid: recipientId }
+            ])
+            .select();
+        if (error) {
+            res.status(400).json({ error: error })
+        }
+
+        res.json({ message: "Added user", data: data });
+            
+    } catch (error) {
+        console.error("Query error:", error);
+        res.status(500).json({ error: "Failed to create connection" });
+    }
+
+})
+
+app.get("/api/connections/:userid", async (req, res) => {
+    try {
+        const userId = req.params.userid;
+        // Fetch connections first
+        const { data: connections, error: connectionsError } = await supabase
+            .from('connections')
+            .select('recipientid')
+            .eq('initiatorid', userId);
+
+        if (connectionsError) {
+            console.error('Error fetching connections:', connectionsError);
+            return;
+        }
+
+        // Extract recipient IDs
+        const recipientIds = connections.map((connection) => connection.recipientid);
+        const { data: users, error } = await supabase
+            .from('users')
+            .select(`
+    id,
+    firstname,
+    lastname,
+    user_profiles (
+      major,
+      graduation_year
+    )
+  `)
+            .in('id', recipientIds); // Filter by the recipient IDs
+
+        if (error) {
+            res.status(400).json({ error: error })
+        }
+        // console.log(users);
+        res.json({ users });
+    } catch (error) {
+        console.error("Query error:", error);
+        res.status(500).json({ error: "Failed to create connection" });
+    }
+
+
+
+})
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
+
+
 
 export default app;

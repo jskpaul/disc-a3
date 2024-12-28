@@ -3,13 +3,17 @@ import React, { useState, useEffect } from 'react';
 import User from './user';
 import { useAuth } from '../contexts/authContext';
 
-function Users({useridProp, tokenProp}) {
-    const [search, setSearch] = useState('');
+function Users({ useridProp, tokenProp }) {
+    const [firstNameSearch, setFirstNameSearch] = useState('');
+    const [lastNameSearch, setLastNameSearch] = useState('');
+    const [majorSearch, setMajorSearch] = useState('');
+    const [graduationYearSearch, setGraduationYearSearch] = useState('')
     const [users, setUsers] = useState([
         // { firstname: 'Paul', lastname:'Kim', major: 'Computer Science', graduationyear: '2027' },
         // { firstname: 'Daniel Lee', major: 'Computer Science', graduationyear: '2025' },
         // { firstname: 'John Doe', major: 'Physics', graduationyear: '2024' },
     ]);
+    const [hasProfile, setHasProfile] = useState(false);
     const [userid, setUserid] = useState('');
     const [token, setToken] = useState('');
     const [currentFirstName, setCurrentFirstName] = useState('');
@@ -29,7 +33,7 @@ function Users({useridProp, tokenProp}) {
         } catch (error) {
             console.error(error);
         }
-        
+
     }
     const fetchCurrentuser = async () => {
 
@@ -41,18 +45,19 @@ function Users({useridProp, tokenProp}) {
                 // console.log(user.firstname);
                 setCurrentFirstName(user.firstname);
                 setCurrentLastName(user.lastname);
+                if (!user.user_profiles.length) {
+                    return;
+                }
+                setHasProfile(true);
                 setCurrentMajor(user.user_profiles[0].major);
                 setCurrentGradYear(user.user_profiles[0].graduation_year);
-                
+
             }
         } catch (error) {
             console.error(error);
         }
 
     }
-    useEffect(() => {
-        console.log('Search term changed:', search);
-    }, [search]);
 
     useEffect(() => {
         fetchUsers();
@@ -62,7 +67,7 @@ function Users({useridProp, tokenProp}) {
     })
     useEffect(() => {
         setUserid(useridProp);
-        
+
     }, [useridProp]);
 
     useEffect(() => {
@@ -70,9 +75,12 @@ function Users({useridProp, tokenProp}) {
 
 
     }, [tokenProp]);
-    
+
     if (!token) {
         return (<h2>Please Log in First</h2>)
+    }
+    if (!hasProfile) {
+        return (<h2>Please Create Profile First</h2>)
     }
     return (
         <div className="users">
@@ -91,21 +99,52 @@ function Users({useridProp, tokenProp}) {
                     {users
                         .filter(
                             (user) =>
-                                user.firstname.toLowerCase().includes(search.toLowerCase()) ||
-                                user.major.toLowerCase().includes(search.toLowerCase()) ||
-                                user.graduation_year.includes(search)
+                                (!firstNameSearch || user.firstname.toLowerCase().includes(firstNameSearch.toLowerCase())) &&
+                                (!lastNameSearch || user.lastname.toLowerCase().includes(lastNameSearch.toLowerCase())) &&
+                                (!majorSearch || user.user_profiles[0].major.toLowerCase().includes(majorSearch.toLowerCase())) &&
+                                (!graduationYearSearch || String(user.user_profiles[0].graduation_year).includes(String(graduationYearSearch)) )
                         )
                         .map((user, index) => (
                             <User
                                 key={index}
+                                requestorId = {userid}
+                                id = {user.id}
                                 firstname={user.firstname}
                                 lastname={user.lastname}
                                 major={user.user_profiles[0].major}
                                 graduationyear={user.user_profiles[0].graduation_year}
-                                // profilepictureurl={user.profilepictureurl}
+                            // profilepictureurl={user.profilepictureurl}
                             />
                         ))}
                 </div>
+                <div className='search-criteria'>
+                    <h2>Search filters</h2>
+                    <input
+                        type="text"
+                        className="search-input"
+                        placeholder="Search by First Name"
+                        onChange={(e) => setFirstNameSearch(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        className="search-input"
+                        placeholder="Search by Last Name"
+                        onChange={(e) => setLastNameSearch(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        className="search-input"
+                        placeholder="Search by Major"
+                        onChange={(e) => setMajorSearch(e.target.value)}
+                    />
+                    <input
+                        type="number"
+                        className="search-input"
+                        placeholder="Search by Graduation Year"
+                        onChange={(e) => setGraduationYearSearch(e.target.value)}
+                    />
+                </div>
+
             </div>
         </div>
     );

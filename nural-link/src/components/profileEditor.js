@@ -95,7 +95,7 @@ function ProfilePage({ useridProp, tokenProp }) {
             <select value={major} onChange={(e) => setMajor(e.target.value)} required>
                 <option value="default-select">Select your major</option>
                 {programs.map((program) => (
-                    <option key={program.id} value={program.id}>
+                    <option key={program.id} value={program.label}>
                         {program.label}
                     </option>
                 ))}

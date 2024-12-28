@@ -164,3 +164,8 @@ select  {
     background-color: #cccccc; /* Optional: change color when disabled */
     cursor: not-allowed; /* Change cursor to indicate it's disabled */
 }
+
+
+.search-criteria {
+  align-self: right;
+}

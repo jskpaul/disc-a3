@@ -12,7 +12,7 @@ import { useAuth } from '../contexts/authContext';
 
 
 
-function Navbar({ setSearch, tokenProp }) {
+function Navbar({ tokenProp }) {
 
     const [showAlert, setShowAlert] = useState(false);
     const [token, setToken] = useState('');
@@ -35,16 +35,13 @@ function Navbar({ setSearch, tokenProp }) {
     //     return () => subscription.unsubscribe()
     // }, [])
     useEffect(() => {
-        console.log(tokenProp)
         setToken(tokenProp);
 
 
     }, [tokenProp]);
-    useEffect(() => {
-        console.log('changed token:', token);
-    }, [token]);
+
     const handleConnectClick = () => {
-        console.log(token);
+        // console.log(token);
         if (!token) {
             setShowAlert(true);
             setTimeout(() => setShowAlert(false), 3000); // Hide the alert after 3 seconds
@@ -64,12 +61,12 @@ function Navbar({ setSearch, tokenProp }) {
             })
             if (response.ok) {
                 localStorage.removeItem('authToken'); // or sessionStorage depending on where you store it
-                
+
             }
         } catch (error) {
             console.error(error);
         }
-        
+
     }
 
 
@@ -79,16 +76,18 @@ function Navbar({ setSearch, tokenProp }) {
             <div className="links">
                 {token ? (<div><Link to='/'><button className='signout-button' onClick={handleSignOut}>Log Out</button></Link>
                     <Link to='/profile'><button className='create-edit-button' >Create/Update Profile</button></Link>
-                    <button className='connect-button' onClick={handleConnectClick}>Connect with users</button></div>) :
+                    <button className='connect-button' onClick={handleConnectClick}>Connect with users</button>
+                    <Link to='/connections'><button className='connect-button' >View my Connections</button></Link>
+                </div>) :
                     (<div><Link to='/new'><button className='new-user-button'>Sign Up</button></Link>
                         <Link to='/auth'><button className='signin-button'>Log in</button></Link></div>)}
 
-                <input
+                {/* <input
                     type="text"
                     className="search-input"
                     placeholder="Search"
                     onChange={(e) => setSearch(e.target.value)}
-                />
+                /> */}
             </div>
             {showAlert && (
                 <Alert severity="warning" className="alert-box">
