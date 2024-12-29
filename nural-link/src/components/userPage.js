@@ -20,6 +20,7 @@ function Users({ useridProp, tokenProp }) {
     const [currentLastName, setCurrentLastName] = useState('');
     const [currentGradYear, setCurrentGradYear] = useState('');
     const [currentMajor, setCurrentMajor] = useState('');
+    const [profilePhotoUrl, setProfilePhotoUrl] = useState('');
 
     const fetchUsers = async () => {
         try {
@@ -50,7 +51,7 @@ function Users({ useridProp, tokenProp }) {
                 setHasProfile(true);
                 setCurrentMajor(user.user_profiles[0].major);
                 setCurrentGradYear(user.user_profiles[0].graduation_year);
-
+                setProfilePhotoUrl(user.user_profiles[0].profilephotourl);
             }
         } catch (error) {
             console.error(error);
@@ -63,7 +64,7 @@ function Users({ useridProp, tokenProp }) {
     }, [users,userid]);
     useEffect(() => {
         fetchCurrentuser();
-    })
+    }, [userid])
     useEffect(() => {
         setUserid(useridProp);
 
@@ -85,11 +86,11 @@ function Users({ useridProp, tokenProp }) {
         <div className="users">
             <div className="users-page">
                 <div className="mini-profile">
-                    <img
+                    {profilePhotoUrl && <img
                         className="profile-photo"
-                        src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c7/Chill_guy_original_artwork.jpg/220px-Chill_guy_original_artwork.jpg"
+                        src={profilePhotoUrl}
                         alt="Profile"
-                    />
+                    />}
                     <h2>{currentFirstName} {currentLastName}</h2>
                     <h3>Class of: {currentGradYear}  </h3>
                     <h3>Major: {currentMajor} </h3>
@@ -113,6 +114,7 @@ function Users({ useridProp, tokenProp }) {
                                 email={user.email}
                                 major={user.user_profiles[0].major}
                                 graduationyear={user.user_profiles[0].graduation_year}
+                                profilepictureurl={user.user_profiles[0].profilephotourl}
                             // profilepictureurl={user.profilepictureurl}
                             />
                         ))}

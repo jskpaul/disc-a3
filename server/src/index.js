@@ -3,7 +3,14 @@ import cors from "cors";
 import pg from "pg";
 import dotenv from "dotenv";
 import { error } from "console";
+import { v4 as uuidv4 } from 'uuid';
 import supabase from "./config/supabase.js";
+import multer from 'multer';
+import path from "path";
+
+// Configure Multer (File Upload Middleware)
+const storage = multer.memoryStorage(); // Store file in memory
+const upload = multer({ storage });
 
 
 const { Pool } = pg;
@@ -27,6 +34,7 @@ export const pool = new Pool({
 pool.connect().then(() => console.log("Connected to the database successfully"))
     .catch((err) => console.error("Database connection error:", err.stack));
 
+// api cal for getting all users apart from the currently logged in user
 app.get("/api/users/:userid", async (req, res) => {
     try {
         const userId = req.params.userid;
@@ -39,7 +47,8 @@ app.get("/api/users/:userid", async (req, res) => {
     email,
     user_profiles (
       major,
-      graduation_year
+      graduation_year,
+      profilephotourl
     )
   `)
             .neq('id', userId);
@@ -54,6 +63,7 @@ app.get("/api/users/:userid", async (req, res) => {
     }
 });
 
+// signup call
 app.post("/api/auth/signup", async (req, res) => {
     const { email, pwd, firstname, lastname } = req.body;
     try {
@@ -111,6 +121,7 @@ app.post("/api/auth/signup", async (req, res) => {
     // }
 })
 
+// login call
 app.post("/api/auth/login", async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -124,6 +135,8 @@ app.post("/api/auth/login", async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 })
+
+// get data of currently logged in user
 app.get("/api/user/:userid", async (req, res) => {
     try {
         const userId = req.params.userid;
@@ -140,7 +153,8 @@ app.get("/api/user/:userid", async (req, res) => {
                 user_profiles (
                     major,
                     graduation_year,
-                    date_of_birth
+                    date_of_birth,
+                    profilephotourl
                 )
             `)
             .eq('id', userId)
@@ -161,11 +175,38 @@ app.get("/api/user/:userid", async (req, res) => {
 
 })
 
-app.put("/api/profile", async (req, res) => {
+// create/update profile put request
+app.put("/api/profile", upload.single('profilePhoto'), async (req, res) => {
     try {
         const { userId, major, graduationYear, birthDate } = req.body;
+        // console.log(req.file);
+        const profilePhoto = req.file;
         const { data, error } = await supabase.from('user_profiles')
             .select(`userid`).eq('userid', userId);
+
+        let photoUrl = null;
+        if (profilePhoto) {
+            const fileExtension = path.extname(profilePhoto.originalname);
+            const { data: uploadData, error: uploadError } = await supabase.storage
+                .from('profile-photos') // Your Supabase storage bucket name
+                .upload(`${uuidv4()}-${Date.now()}${fileExtension}`, profilePhoto.buffer, {
+                    contentType: profilePhoto.mimetype,
+                    upsert: true,
+                });
+
+            if (uploadError) {
+                console.error(uploadError)
+                return res.status(500).json({ error: uploadError.message });
+            }
+            // Generate a public URL for the uploaded file
+            const { data: publicUrlData, error: urlError } = supabase.storage
+                .from('profile-photos')
+                .getPublicUrl(`${uploadData.path}`);
+            if (urlError) {
+                throw urlError;
+            }
+            photoUrl = publicUrlData.publicUrl; // Store the public URL for database storage
+        }
         if (data.length === 0) {
             // make new profile
             const { data: profile_data, error } = await supabase.from('user_profiles')
@@ -173,7 +214,8 @@ app.put("/api/profile", async (req, res) => {
                     userid: userId,
                     major: major,
                     graduation_year: graduationYear,
-                    date_of_birth: birthDate
+                    date_of_birth: birthDate,
+                    profilephotourl: photoUrl
                 }])
             if (error) {
                 res.status(400).json({ error: error })
@@ -181,18 +223,35 @@ app.put("/api/profile", async (req, res) => {
 
             res.json({ message: "profile added", data: data })
         } else {
-            const { data: profile_data, error } = await supabase.from('user_profiles')
-                .update([{
-                    userid: userId,
-                    major: major,
-                    graduation_year: graduationYear,
-                    date_of_birth: birthDate
-                }]).eq('userid', userId);
-            if (error) {
-                res.status(400).json({ error: error })
-            }
+            if (photoUrl) {
+                const { data: profile_data, error } = await supabase.from('user_profiles')
+                    .update([{
+                        userid: userId,
+                        major: major,
+                        graduation_year: graduationYear,
+                        date_of_birth: birthDate,
+                        profilephotourl: photoUrl
+                    }]).eq('userid', userId);
+                if (error) {
+                    res.status(400).json({ error: error })
+                }
 
-            res.json({ message: "profile updated", data: data });
+                res.json({ message: "profile updated", data: data });
+            } else {
+                const { data: profile_data, error } = await supabase.from('user_profiles')
+                    .update([{
+                        userid: userId,
+                        major: major,
+                        graduation_year: graduationYear,
+                        date_of_birth: birthDate
+                    }]).eq('userid', userId);
+                if (error) {
+                    res.status(400).json({ error: error })
+                }
+
+                res.json({ message: "profile updated", data: data });
+            }
+            
         }
     } catch (error) {
         console.error("Query error:", error);
@@ -242,8 +301,8 @@ app.post('/api/auth/logout', async (req, res) => {
         res.json({ message: "logged out" });
 
     } catch (error) {
-        res.status(500).json({message: "failed to log out", error: error})
-    }    
+        res.status(500).json({ message: "failed to log out", error: error })
+    }
 
 })
 
@@ -258,7 +317,7 @@ app.get("/api/protected", checkAuth, (req, res) => {
 app.put("/api/connect", async (req, res) => {
     try {
         const connection = req.body;
-        
+
         const recipientId = connection.id;
         // console.log(recipientId);
         const requestorId = connection.requestorId;
@@ -284,7 +343,7 @@ app.put("/api/connect", async (req, res) => {
         }
 
         res.json({ message: "Added user", data: data });
-            
+
     } catch (error) {
         console.error("Query error:", error);
         res.status(500).json({ error: "Failed to create connection" });
@@ -314,9 +373,11 @@ app.get("/api/connections/:userid", async (req, res) => {
     id,
     firstname,
     lastname,
+    email,
     user_profiles (
       major,
-      graduation_year
+      graduation_year,
+      profilephotourl
     )
   `)
             .in('id', recipientIds); // Filter by the recipient IDs
@@ -334,6 +395,37 @@ app.get("/api/connections/:userid", async (req, res) => {
 
 
 })
+
+app.post('/api/upload', upload.single('file'), async (req, res) => {
+    const bucketName = 'your-bucket-name'; // Supabase bucket name
+    const file = req.file; // Access the file from the request
+
+    if (!file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const uniqueFileName = `${Date.now()}-${file.originalname}`; // Generate a unique name for the file
+
+    try {
+        const { data, error } = await supabase.storage
+            .from(bucketName)
+            .upload(uniqueFileName, file.buffer, {
+                contentType: file.mimetype,
+                upsert: false, // Prevent overwriting existing files
+            });
+
+        if (error) {
+            return res.status(500).json({ error: error.message });
+        }
+
+        // Generate a public URL for the uploaded file (optional)
+        const { publicUrl } = supabase.storage.from(bucketName).getPublicUrl(data.path);
+
+        res.json({ message: 'File uploaded successfully', path: data.path, publicUrl });
+    } catch (err) {
+        res.status(500).json({ error: 'Unexpected error occurred', details: err.message });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

@@ -10,6 +10,9 @@ function ProfilePage({ useridProp, tokenProp }) {
     const [token, setToken] = useState('');
     const [userId, setUserId] = useState('');
     const navigate = useNavigate();
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [profilePhotoUrl, setProfilePhotoUrl] = useState('');
+
 
     const loadProfile = async () => {
         try {
@@ -25,6 +28,8 @@ function ProfilePage({ useridProp, tokenProp }) {
                 setMajor(profile[0].major);
                 setGraduationYear(profile[0].graduation_year);
                 setBirthDate(profile[0].date_of_birth);
+                setProfilePhotoUrl(profile[0].profilephotourl);
+
             }
         } catch (error) {
             console.error(error);
@@ -38,25 +43,39 @@ function ProfilePage({ useridProp, tokenProp }) {
 
     const handleUpdateProfile = async () => {
         setIsLoading(true);
+        // console.log(selectedFile)
 
         try {
-            const profile = {
-                userId,
-                major,
-                graduationYear,
-                birthDate,
+            let profile = new FormData();
+            // Append fields to FormData
+            profile.append('userId', userId);
+            profile.append('major', major);
+            profile.append('graduationYear', graduationYear);
+            profile.append('birthDate', birthDate);
 
+            if (selectedFile) {
+                profile.append('profilePhoto', selectedFile); // Key name should match the server's expectation
             }
+            // console.log(profile);
+            // const profile = {
+            //     userId,
+            //     major,
+            //     graduationYear,
+            //     birthDate,
+            //     selectedFile
+
+            // }
 
             const response = await fetch("http://localhost:3002/api/profile", {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+
                 credentials: "include",
-                body: JSON.stringify(profile),
+                body: profile,
             });
+            console.log(response);
             if (response.ok) {
+                const data = await response.json()
+                console.log(data);
                 alert('Profile successfully updated!');
                 navigate('/users');
             }
@@ -73,7 +92,7 @@ function ProfilePage({ useridProp, tokenProp }) {
 
 
     }, [tokenProp, useridProp]);
-    
+
     // useEffect(() => {
     //     console.log('changed token:', token);
     // }, [token]);
@@ -94,7 +113,7 @@ function ProfilePage({ useridProp, tokenProp }) {
         </div>
         <div className="form-field">
             <label>Major:</label>
-            
+
             <select value={major} onChange={(e) => setMajor(e.target.value)} required>
                 <option value="default-select">Select your major</option>
                 {programs.map((program) => (
@@ -126,14 +145,32 @@ function ProfilePage({ useridProp, tokenProp }) {
                 })()}
             </select>
         </div>
+        <div className='form-field'>
+            <label>Profile Photo (optional):</label>
+            {profilePhotoUrl && (
+                <div>
+                    <p>Current Profile Photo:</p>
+                    <img src={profilePhotoUrl} alt="Profile" style={{ width: '150px', height: '150px', objectFit: 'cover' }} />
+                </div>
+            )}
+
+            {/* File input to upload new photo */}
+            <label htmlFor="fileInput">Choose File:</label>
+            <input
+                type="file"
+                id="fileInput"
+                onChange={(e) => { setSelectedFile(e.target.files[0]) }}
+                accept="image/*" // Restrict to image files
+            />
+        </div>
         <button
-        className="submit-button"
-        type="submit"
-        disabled={isLoading}
-        onClick={handleUpdateProfile}
-            >
-        {isLoading ? 'Saving Changes...' : 'Save Changes to Profile'}
-    </button>
+            className="submit-button"
+            type="submit"
+            disabled={isLoading}
+            onClick={handleUpdateProfile}
+        >
+            {isLoading ? 'Saving Changes...' : 'Save Changes to Profile'}
+        </button>
     </form>)
 }
 
