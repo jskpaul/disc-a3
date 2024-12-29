@@ -7,6 +7,9 @@ function User({id, requestorId, firstname, lastname, email, bio, major, graduati
 
     const handleConnectUser = async () => {
         try {
+            if (id === requestorId) {
+                alert("Please try connecting to a different user");
+            }
             const response = await fetch("http://localhost:3002/api/connect", {
                 method: 'PUT',
                 headers: {
@@ -34,7 +37,8 @@ function User({id, requestorId, firstname, lastname, email, bio, major, graduati
             <h4>{firstname} {lastname}</h4>
             <p>Major: {major}</p>
             <p>Class Of: {graduationyear}</p>
-            <img className = "profile-photo" src={profilepictureurl} alt='profile'/>
+            <img className="profile-photo" src={profilepictureurl} alt='profile' />
+            <p>Contact: <a href={`mailto:${email}`}>{email}</a></p>
             <button onClick={handleConnectUser}>Connect</button>
         </div>
     );

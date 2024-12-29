@@ -75,12 +75,12 @@ function App() {
       <div className="App">
         <Navbar  tokenProp={token} />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home useridProp={loggedInUserId} tokenProp={token} />} />
           <Route path="/users" element={<Users useridProp={loggedInUserId} tokenProp={token} />} />
           <Route path="/new" element={<NewUser />} />
           <Route path="/auth" element={<LogIn />} />
           <Route path='/profile' element={<ProfilePage useridProp={loggedInUserId} tokenProp={token} /> } />
-          <Route path='/connections' element={< ConnectionsPage useridProp={loggedInUserId} />} />
+          <Route path='/connections' element={< ConnectionsPage useridProp={loggedInUserId} tokenProp={token} />} />
         </Routes>
       </div>
     </Router>

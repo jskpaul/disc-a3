@@ -23,10 +23,9 @@ function Users({ useridProp, tokenProp }) {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch(`http://localhost:3002/api/users`);
+            const response = await fetch(`http://localhost:3002/api/users/${userid}`);
             if (response.ok) {
                 let users = await response.json();
-                // console.log(users);
                 setUsers(users);
 
             }
@@ -61,7 +60,7 @@ function Users({ useridProp, tokenProp }) {
 
     useEffect(() => {
         fetchUsers();
-    }, [users]);
+    }, [users,userid]);
     useEffect(() => {
         fetchCurrentuser();
     })
@@ -80,7 +79,7 @@ function Users({ useridProp, tokenProp }) {
         return (<h2>Please Log in First</h2>)
     }
     if (!hasProfile) {
-        return (<h2>Please Create Profile First</h2>)
+        return (<h2>Other user profiles will show here once you have created your profile.</h2>)
     }
     return (
         <div className="users">
@@ -111,6 +110,7 @@ function Users({ useridProp, tokenProp }) {
                                 id = {user.id}
                                 firstname={user.firstname}
                                 lastname={user.lastname}
+                                email={user.email}
                                 major={user.user_profiles[0].major}
                                 graduationyear={user.user_profiles[0].graduation_year}
                             // profilepictureurl={user.profilepictureurl}

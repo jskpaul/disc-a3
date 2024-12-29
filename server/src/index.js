@@ -3,8 +3,6 @@ import cors from "cors";
 import pg from "pg";
 import dotenv from "dotenv";
 import { error } from "console";
-import { v4 as uuidv4 } from 'uuid';
-import { hash } from "crypto";
 import supabase from "./config/supabase.js";
 
 
@@ -29,20 +27,22 @@ export const pool = new Pool({
 pool.connect().then(() => console.log("Connected to the database successfully"))
     .catch((err) => console.error("Database connection error:", err.stack));
 
-app.get("/api/users", async (req, res) => {
+app.get("/api/users/:userid", async (req, res) => {
     try {
-
+        const userId = req.params.userid;
         const { data, error } = await supabase
             .from('users')
             .select(`
                 id,
     firstname,
     lastname,
+    email,
     user_profiles (
       major,
       graduation_year
     )
-  `);
+  `)
+            .neq('id', userId);
 
         // const result = await pool.query(
         //     "select * from users order by id asc"
@@ -136,6 +136,7 @@ app.get("/api/user/:userid", async (req, res) => {
             .select(`
                 firstname,
                 lastname,
+                email,
                 user_profiles (
                     major,
                     graduation_year,
@@ -233,7 +234,16 @@ app.post('/api/auth/validate-token', checkAuth);
 app.get('/api/auth/status', checkSession);
 
 app.post('/api/auth/logout', async (req, res) => {
-    const { error } = await supabase.auth.signOut();
+    try {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            throw error;
+        }
+        res.json({ message: "logged out" });
+
+    } catch (error) {
+        res.status(500).json({message: "failed to log out", error: error})
+    }    
 
 })
 
@@ -269,7 +279,8 @@ app.put("/api/connect", async (req, res) => {
             ])
             .select();
         if (error) {
-            res.status(400).json({ error: error })
+            res.status(400).json({ error: error });
+            return;
         }
 
         res.json({ message: "Added user", data: data });

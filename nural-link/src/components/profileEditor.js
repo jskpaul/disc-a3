@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Component } from 'react';
 import { AuthProvider, useAuth } from '../contexts/authContext';
 import programs from './majors';
+import { useNavigate } from 'react-router-dom';
 function ProfilePage({ useridProp, tokenProp }) {
     const [major, setMajor] = useState('');
     const [graduationYear, setGraduationYear] = useState(null);
@@ -8,15 +9,16 @@ function ProfilePage({ useridProp, tokenProp }) {
     const [isLoading, setIsLoading] = useState(false);
     const [token, setToken] = useState('');
     const [userId, setUserId] = useState('');
+    const navigate = useNavigate();
 
     const loadProfile = async () => {
         try {
             const response = await fetch(`http://localhost:3002/api/user/${userId}`);
-            console.log(response);
+            // console.log(response);
             if (response.ok) {
                 const user = await response.json();
                 const profile = user.user_profiles;
-                console.log(profile);
+                // console.log(profile);
                 if (!profile.length) {
                     return;
                 }
@@ -56,6 +58,7 @@ function ProfilePage({ useridProp, tokenProp }) {
             });
             if (response.ok) {
                 alert('Profile successfully updated!');
+                navigate('/users');
             }
         } catch (error) {
             alert("An error occured:", error.message);

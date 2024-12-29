@@ -46,7 +46,8 @@ function LogIn() {
             
             
                 alert('Successfully logged in!');
-                navigate('/');
+            navigate('/');
+            window.location.reload();
             
             
             

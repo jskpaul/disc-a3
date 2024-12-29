@@ -60,9 +60,13 @@ function Navbar({ tokenProp }) {
 
             })
             if (response.ok) {
+                alert("Logged out.")
                 localStorage.removeItem('authToken'); // or sessionStorage depending on where you store it
-
+                navigate('/');
+                setTimeout(() => window.location.reload(), 0);
             }
+            
+
         } catch (error) {
             console.error(error);
         }
