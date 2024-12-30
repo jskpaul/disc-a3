@@ -17,7 +17,7 @@ function ConnectionsPage({ useridProp, tokenProp }) {
     const fetchConnections = async () => {
 
         try {
-            const response = await fetch(`http://localhost:3002/api/connections/${userId}`);
+            const response = await fetch(`https://disc-assignment-social-connections-backend.vercel.app/api/connections/${userId}`);
             // console.log(response);
 
 
@@ -33,7 +33,7 @@ function ConnectionsPage({ useridProp, tokenProp }) {
     const fetchCurrentuser = async () => {
 
         try {
-            const response = await fetch(`http://localhost:3002/api/user/${userId}`);
+            const response = await fetch(`https://disc-assignment-social-connections-backend.vercel.app/api/user/${userId}`);
             if (response.ok) {
                 const user = await response.json();
                 // console.log(user)

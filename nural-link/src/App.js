@@ -31,7 +31,7 @@ function App() {
 
   const checkLogIn = async () => {
     try {
-      const response = await fetch("http://localhost:3002/api/auth/status", {
+      const response = await fetch("https://disc-assignment-social-connections-backend.vercel.app/api/auth/status", {
         method: "GET",
         // headers: {
         //   "authorization": `Bearer ${token}`,

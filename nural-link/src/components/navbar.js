@@ -51,7 +51,7 @@ function Navbar({ tokenProp }) {
     };
     const handleSignOut = async () => {
         try {
-            const response = await fetch('http://localhost:3002/api/auth/logout', {
+            const response = await fetch('https://disc-assignment-social-connections-backend.vercel.app/api/auth/logout', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

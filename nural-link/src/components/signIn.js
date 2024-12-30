@@ -30,7 +30,7 @@ function LogIn() {
         setError('');
 
         try {
-            const response = await fetch("http://localhost:3002/api/auth/login", {
+            const response = await fetch("https://disc-assignment-social-connections-backend.vercel.app/api/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

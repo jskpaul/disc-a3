@@ -24,7 +24,7 @@ function Users({ useridProp, tokenProp }) {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch(`http://localhost:3002/api/users/${userid}`);
+            const response = await fetch(`https://disc-assignment-social-connections-backend.vercel.app/api/users/${userid}`);
             if (response.ok) {
                 let users = await response.json();
                 setUsers(users);
@@ -38,7 +38,7 @@ function Users({ useridProp, tokenProp }) {
     const fetchCurrentuser = async () => {
 
         try {
-            const response = await fetch(`http://localhost:3002/api/user/${userid}`);
+            const response = await fetch(`https://disc-assignment-social-connections-backend.vercel.app/api/user/${userid}`);
             if (response.ok) {
                 const user = await response.json();
                 // console.log(user)

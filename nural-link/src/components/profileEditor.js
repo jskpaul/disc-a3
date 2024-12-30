@@ -16,7 +16,7 @@ function ProfilePage({ useridProp, tokenProp }) {
 
     const loadProfile = async () => {
         try {
-            const response = await fetch(`http://localhost:3002/api/user/${userId}`);
+            const response = await fetch(`https://disc-assignment-social-connections-backend.vercel.app/api/user/${userId}`);
             // console.log(response);
             if (response.ok) {
                 const user = await response.json();
@@ -66,20 +66,23 @@ function ProfilePage({ useridProp, tokenProp }) {
 
             // }
 
-            const response = await fetch("http://localhost:3002/api/profile", {
+            const response = await fetch("https://disc-assignment-social-connections-backend.vercel.app/api/profile", {
                 method: "PUT",
 
                 credentials: "include",
                 body: profile,
             });
+            // console.log(response);
+
             if (response.ok) {
                 const data = await response.json()
-                console.log(data);
+                // console.log(data);
                 alert('Profile successfully updated!');
                 navigate('/users');
             }
         } catch (error) {
             alert("An error occured:", error.message);
+            
         } finally {
             setIsLoading(false);
         }
