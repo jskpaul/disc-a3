@@ -4,7 +4,6 @@ class AuthController {
     async signUp(req, res) {
         try {
             const { email, pwd } = req.body;
-            console.log(pwd);
             const { data, error } = await supabase.auth.signUp({
                 email,
                 pwd,

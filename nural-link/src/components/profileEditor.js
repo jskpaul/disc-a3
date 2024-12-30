@@ -72,7 +72,6 @@ function ProfilePage({ useridProp, tokenProp }) {
                 credentials: "include",
                 body: profile,
             });
-            console.log(response);
             if (response.ok) {
                 const data = await response.json()
                 console.log(data);

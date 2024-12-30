@@ -86,7 +86,8 @@ function ConnectionsPage({ useridProp, tokenProp }) {
                     <h2>{currentFirstName} {currentLastName}</h2>
                     <h3>Class of: {currentGradYear}  </h3>
                     <h3>Major: {currentMajor} </h3>
-                </div>}
+        </div>}
+        <h3>Profiles saved</h3>
         <div className='user-boxes'>
             {userConnections.length ? userConnections.map((user, index) => (
                 <User key={index}

@@ -28,7 +28,6 @@ export const AuthProvider = ({ children }) => {
             });
 
             if (response.ok) {
-                console.log(savedToken);
                 setToken(savedToken);
             } else {
                 localStorage.removeItem('authToken');

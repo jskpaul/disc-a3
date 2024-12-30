@@ -49,11 +49,9 @@ function NewUser() {
     const validatePwds = () => {
         if (pwd !== confirmPwd) {
             setError('Passwords do not match');
-            console.log(error);
             return false;
         } else {
             setError('');
-            console.log(error);
             return true;
         }
         
@@ -117,7 +115,6 @@ function NewUser() {
 
             }
             const response = await addUser(newUser);
-            console.log(response, response['statusCode']);
             if (response['statusCode'] !== 200) {
                 alert('Error adding user:', response.msg);
                 setIsLoading(false);
@@ -152,12 +149,10 @@ function NewUser() {
                 "Content-Type": "application/json",
             },
         });
-        console.log(response);
         try {
             if (response.ok) {
                 const response_data = await response.json();
                 const newUser = response_data['user'];
-                console.log(response.status);
                 return {statusCode: response.status, user: newUser};
             }
         } catch (error) {

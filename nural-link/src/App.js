@@ -22,7 +22,7 @@ function App() {
   useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const accessToken = hashParams.get("access_token");
-    console.log(accessToken);
+    // console.log(accessToken);
     if (accessToken) {
       setToken(accessToken);
       window.history.replaceState(null, "", window.location.pathname);

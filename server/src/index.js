@@ -259,6 +259,7 @@ app.put("/api/profile", upload.single('profilePhoto'), async (req, res) => {
     }
 })
 
+// validates authentication
 const checkSession = async (req, res) => {
     try {
         const { data, error } = await supabase.auth.getSession();
@@ -292,6 +293,7 @@ const checkAuth = async (req, res) => {
 app.post('/api/auth/validate-token', checkAuth);
 app.get('/api/auth/status', checkSession);
 
+// logout post request
 app.post('/api/auth/logout', async (req, res) => {
     try {
         const { error } = await supabase.auth.signOut();
@@ -314,6 +316,7 @@ app.get("/api/protected", checkAuth, (req, res) => {
     });
 });
 
+// put request for adding user connection
 app.put("/api/connect", async (req, res) => {
     try {
         const connection = req.body;
@@ -350,7 +353,7 @@ app.put("/api/connect", async (req, res) => {
     }
 
 })
-
+// get all connections added by user
 app.get("/api/connections/:userid", async (req, res) => {
     try {
         const userId = req.params.userid;
@@ -396,36 +399,7 @@ app.get("/api/connections/:userid", async (req, res) => {
 
 })
 
-app.post('/api/upload', upload.single('file'), async (req, res) => {
-    const bucketName = 'your-bucket-name'; // Supabase bucket name
-    const file = req.file; // Access the file from the request
 
-    if (!file) {
-        return res.status(400).json({ error: 'No file uploaded' });
-    }
-
-    const uniqueFileName = `${Date.now()}-${file.originalname}`; // Generate a unique name for the file
-
-    try {
-        const { data, error } = await supabase.storage
-            .from(bucketName)
-            .upload(uniqueFileName, file.buffer, {
-                contentType: file.mimetype,
-                upsert: false, // Prevent overwriting existing files
-            });
-
-        if (error) {
-            return res.status(500).json({ error: error.message });
-        }
-
-        // Generate a public URL for the uploaded file (optional)
-        const { publicUrl } = supabase.storage.from(bucketName).getPublicUrl(data.path);
-
-        res.json({ message: 'File uploaded successfully', path: data.path, publicUrl });
-    } catch (err) {
-        res.status(500).json({ error: 'Unexpected error occurred', details: err.message });
-    }
-});
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
