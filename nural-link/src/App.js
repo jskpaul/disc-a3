@@ -1,35 +1,86 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-import User from './components/user';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/navbar';
 import Home from './components/Home';
 import Users from './components/userPage';
+import NewUser from './components/newUserPage';
+import { createClient } from '@supabase/supabase-js'
+import { Auth, SignIn } from '@supabase/auth-ui-react'
+import { ThemeSupa } from '@supabase/auth-ui-shared'
+import LogIn from './components/signIn';
+import ProfilePage from './components/profileEditor';
+import ConnectionsPage from './components/connectionsPage';
+
 
 
 
 function App() {
 
-  const [search, setSearch] = useState("")
-  const [users, setUsers] = useState([{ name: 'Paul Kim', major: 'Computer Science', year: '2027' },
-  { name: 'Daniel Lee', major: 'Computer Science', year: '2025' },
-  { name: 'David Yim', major: 'Computer Science', year: '2027' },
-  { name: 'John Doe', major: 'Physics', year: '2024' },]);
+  const [token, setToken] = useState("");
+  const [loggedInUserId, setLoggedInUserId] = useState("");
+  useEffect(() => {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get("access_token");
+    // console.log(accessToken);
+    if (accessToken) {
+      setToken(accessToken);
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, []);
+
+  const checkLogIn = async () => {
+    try {
+      const response = await fetch("http://localhost:3002/api/auth/status", {
+        method: "GET",
+        // headers: {
+        //   "authorization": `Bearer ${token}`,
+        //   "Content-Type": "application/json",
+        // },
+        credentials: "include",
+      });
+      
+      // console.log(response);
+      if (response.ok) {
+        const data = await response.json();
+        // console.log(data);
+        // console.log(data);
+        // console.log(response);
+        setToken(data.session_token); // Update token state if authenticated
+        setLoggedInUserId(data.user_id);
+        // console.log(data.user_id)
+      } else {
+        setToken(''); // Clear token if not authenticated
+      }
+    } catch (error) {
+      console.error("Error checking login status:", error);
+
+    }
+
+  }
+
+  useEffect(() => {
+    checkLogIn()
+  })
 
   // Log when search term changes
-  useEffect(() => {
-    console.log('Search term changed:', search);
-  }, [search]); // This effect runs every time `search` state changes
-  useEffect(() => {
-    console.log('New user added: ')
-  }, [users])
+  // useEffect(() => {
+  //   console.log('Search term changed:', search);
+  // }, [search]); // This effect runs every time `search` state changes
+  // useEffect(() => {
+  //   console.log('New user added: ')
+  // }, [users])
   return (
     <Router>
       <div className="App">
-        <Navbar setSearch={setSearch} />
+        <Navbar  tokenProp={token} />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/users" element={<Users />} />
+          <Route path="/" element={<Home useridProp={loggedInUserId} tokenProp={token} />} />
+          <Route path="/users" element={<Users useridProp={loggedInUserId} tokenProp={token} />} />
+          <Route path="/new" element={<NewUser />} />
+          <Route path="/auth" element={<LogIn />} />
+          <Route path='/profile' element={<ProfilePage useridProp={loggedInUserId} tokenProp={token} /> } />
+          <Route path='/connections' element={< ConnectionsPage useridProp={loggedInUserId} tokenProp={token} />} />
         </Routes>
       </div>
     </Router>
