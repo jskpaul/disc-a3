@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
 
     const validateToken = async (savedToken) => {
         try {
-            const response = await fetch('/api/auth/validate-token', {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/auth/validate-token`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

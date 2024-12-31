@@ -399,6 +399,82 @@ app.get("/api/connections/:userid", async (req, res) => {
 
 })
 
+app.delete("/api/profile/:userid", async (req, res) => {
+    try {
+        const userId = req.params.userid;
+        const [deleteConnectionsResult, deleteProfilesResult] = await Promise.all([
+            supabase
+                .from('connections')
+                .delete()
+                .or(`initiatorid.eq.${userId},recipientid.eq.${userId}`),
+            supabase
+                .from('user_profiles')
+                .delete()
+                .eq('userid', userId)
+        ]);
+
+        const { data: deleteConnectionData, error: deleteConnectionError } = deleteConnectionsResult;
+        const { data: deleteProfileData, error: deleteProfileError } = deleteProfilesResult;
+        if (deleteConnectionError || deleteProfileError) {
+            console.error('Error deleting data:', {
+                deleteConnectionError,
+                deleteProfileError
+            });
+        } else {
+            console.log('Deleted data:', {
+                deleteConnectionData,
+                deleteProfileData
+            });
+        }
+
+        res.json({ message: "profile deleted" });
+
+
+    } catch (error) {
+        res.status(500).json({error: error})
+    }
+    
+})
+
+app.delete("/api/delete/:userid", async (req, res) => {
+    try {
+        const userId = req.params.userid;
+        const [deleteConnectionsResult, deleteProfilesResult] = await Promise.all([
+            supabase
+                .from('connections')
+                .delete()
+                .or(`initiatorid.eq.${userId},recipientid.eq.${userId}`),
+            supabase
+                .from('user_profiles')
+                .delete()
+                .eq('userid', userId)
+        ]);
+
+        const { data: deleteConnectionData, error: deleteConnectionError } = deleteConnectionsResult;
+        const { data: deleteProfileData, error: deleteProfileError } = deleteProfilesResult;
+        if (deleteConnectionError || deleteProfileError) {
+            console.error('Error deleting data:', {
+                deleteConnectionError,
+                deleteProfileError
+            });
+        } else {
+            console.log('Deleted data:', {
+                deleteConnectionData,
+                deleteProfileData
+            });
+        }
+
+        const { data: userData, error: userError } = await supabase.from('users')
+            .delete()
+            .eq('id', userId);
+        const { data: authData, error: authError } = await supabase.auth.admin.deleteUser(userId);
+
+        res.json({ message: "profile and user deleted" });
+    } catch (error) {
+        res.status(500).json({ error: error })
+
+    }
+})
 
 
 app.listen(port, () => {

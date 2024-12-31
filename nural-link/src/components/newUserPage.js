@@ -142,7 +142,7 @@ function NewUser() {
     // }
 
     const addUser = async (user) => {
-        const response = await fetch("https://disc-assignment-social-connections-backend.vercel.app/api/user", {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/user`, {
             method: "POST",
             body: JSON.stringify(user),
             headers: {
@@ -169,7 +169,7 @@ function NewUser() {
             return;
         }
         try {
-            const response = await fetch("https://disc-assignment-social-connections-backend.vercel.app/api/auth/signup", {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/auth/signup`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

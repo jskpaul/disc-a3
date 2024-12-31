@@ -16,7 +16,7 @@ function ProfilePage({ useridProp, tokenProp }) {
 
     const loadProfile = async () => {
         try {
-            const response = await fetch(`https://disc-assignment-social-connections-backend.vercel.app/api/user/${userId}`);
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/user/${userId}`);
             // console.log(response);
             if (response.ok) {
                 const user = await response.json();
@@ -66,7 +66,7 @@ function ProfilePage({ useridProp, tokenProp }) {
 
             // }
 
-            const response = await fetch("https://disc-assignment-social-connections-backend.vercel.app/api/profile", {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/profile`, {
                 method: "PUT",
 
                 credentials: "include",
@@ -88,6 +88,30 @@ function ProfilePage({ useridProp, tokenProp }) {
         }
 
     }
+
+    const handleDeleteProfile = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/profile/${userId}`,
+                {
+                    method: 'DELETE'
+                }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                alert(data.message);
+                navigate('/');
+            }
+
+        } catch (error) {
+            alert(error)
+        } finally {
+            setIsLoading(false);
+        }
+
+    }
+
     useEffect(() => {
         setToken(tokenProp);
         setUserId(useridProp);
@@ -172,6 +196,15 @@ function ProfilePage({ useridProp, tokenProp }) {
             onClick={handleUpdateProfile}
         >
             {isLoading ? 'Saving Changes...' : 'Save Changes to Profile'}
+        </button>
+
+        <button
+            className="delete-button"
+            type="submit"
+            disabled={isLoading}
+            onClick={handleDeleteProfile}
+        >
+            {isLoading ? 'Deleting...' : 'Delete Profile'}
         </button>
     </form>)
 }
