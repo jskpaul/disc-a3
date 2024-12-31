@@ -166,6 +166,23 @@ select  {
     cursor: not-allowed; /* Change cursor to indicate it's disabled */
 }
 
+.delete-button {
+    width: auto; /* Adjust the width to fit the button content */
+    padding: 10px 20px; /* Add some padding for better styling */
+    border: none; /* Optional: remove default border */
+    border-radius: 5px; /* Optional: add rounded corners */
+    background-color: red; /* Optional: set button background color */
+    color: white; /* Optional: set text color */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    display: inline-block; /* Ensure it doesn't behave like a block element */
+    margin: 10px auto; /* Center the button horizontally */
+}
+
+.delete-button:disabled {
+    background-color: #cccccc; /* Optional: change color when disabled */
+    cursor: not-allowed; /* Change cursor to indicate it's disabled */
+}
+
 
 .search-criteria {
   align-self: right;

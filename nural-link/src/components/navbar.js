@@ -12,10 +12,11 @@ import { useAuth } from '../contexts/authContext';
 
 
 
-function Navbar({ tokenProp }) {
+function Navbar({ tokenProp, userIdProp }) {
 
     const [showAlert, setShowAlert] = useState(false);
     const [token, setToken] = useState('');
+    const [userId, setUserId] = useState('');
     const [loggedIn, setLoggedIn] = useState(false);
     const navigate = useNavigate();
     const { logOut } = useAuth();
@@ -39,6 +40,11 @@ function Navbar({ tokenProp }) {
 
 
     }, [tokenProp]);
+    useEffect(() => {
+        setUserId(userIdProp);
+
+
+    }, [userIdProp]);
 
     const handleConnectClick = () => {
         // console.log(token);
@@ -51,7 +57,7 @@ function Navbar({ tokenProp }) {
     };
     const handleSignOut = async () => {
         try {
-            const response = await fetch('https://disc-assignment-social-connections-backend.vercel.app/api/auth/logout', {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -73,6 +79,26 @@ function Navbar({ tokenProp }) {
 
     }
 
+    const handleDeleteAccount = async () => {
+        if (!window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+            return;
+        }
+        // console.log(userId);
+        try {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/delete/${userId}`, {
+                method: 'DELETE'
+            })
+            if (response.ok) {
+                alert("Account deleted.");
+                localStorage.removeItem('authToken'); // or sessionStorage depending on where you store it
+                setToken('');
+                navigate('/');
+            }
+        } catch (error) {
+            alert(error);
+        }
+    }
+
 
     return (
         <nav className="navbar">
@@ -82,6 +108,7 @@ function Navbar({ tokenProp }) {
                     <Link to='/profile'><button className='create-edit-button' >Create/Update Profile</button></Link>
                     <button className='connect-button' onClick={handleConnectClick}>Connect with users</button>
                     <Link to='/connections'><button className='connect-button' >View my Connections</button></Link>
+                    <button className='connect-button' onClick={handleDeleteAccount} >Delete Account</button>
                 </div>) :
                     (<div><Link to='/new'><button className='new-user-button'>Sign Up</button></Link>
                         <Link to='/auth'><button className='signin-button'>Log in</button></Link></div>)}

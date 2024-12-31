@@ -11,7 +11,8 @@ import { ThemeSupa } from '@supabase/auth-ui-shared'
 import LogIn from './components/signIn';
 import ProfilePage from './components/profileEditor';
 import ConnectionsPage from './components/connectionsPage';
-
+// import dotenv from 'dotenv';
+// dotenv.config();
 
 
 
@@ -31,7 +32,7 @@ function App() {
 
   const checkLogIn = async () => {
     try {
-      const response = await fetch("https://disc-assignment-social-connections-backend.vercel.app/api/auth/status", {
+      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/auth/status`, {
         method: "GET",
         // headers: {
         //   "authorization": `Bearer ${token}`,
@@ -39,7 +40,7 @@ function App() {
         // },
         credentials: "include",
       });
-      
+
       // console.log(response);
       if (response.ok) {
         const data = await response.json();
@@ -73,13 +74,13 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Navbar  tokenProp={token} />
+        <Navbar tokenProp={token} userIdProp={loggedInUserId} />
         <Routes>
           <Route path="/" element={<Home useridProp={loggedInUserId} tokenProp={token} />} />
           <Route path="/users" element={<Users useridProp={loggedInUserId} tokenProp={token} />} />
           <Route path="/new" element={<NewUser />} />
           <Route path="/auth" element={<LogIn />} />
-          <Route path='/profile' element={<ProfilePage useridProp={loggedInUserId} tokenProp={token} /> } />
+          <Route path='/profile' element={<ProfilePage useridProp={loggedInUserId} tokenProp={token} />} />
           <Route path='/connections' element={< ConnectionsPage useridProp={loggedInUserId} tokenProp={token} />} />
         </Routes>
       </div>
