@@ -1,3 +1,8 @@
+# NUral Network Created by: Paul Kim
+
+This is a prototype of my web application where Northwestern Students can create their profiles, look up other profiles in the app, and connect with users with similar majors or interests. I put together a simple UI for the frontend with react although there is lots of room for improvement, as I prioritized the backend functionalities more.
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
